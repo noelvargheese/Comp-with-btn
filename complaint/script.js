@@ -6,7 +6,7 @@ const type=document.getElementById("type");
 const priority=document.getElementById("priority");
 const locationBox=document.getElementById("location");
 const description=document.getElementById("description");
-
+const urgency = document.getElementById("urgency");
 const submitBtn=document.getElementById("submitComplaint");
 const refreshBtn=document.getElementById("refresh");
 const taskContainer=document.getElementById("taskContainer");
@@ -101,6 +101,8 @@ submitBtn.onclick=async()=>{
 
     "&priority="+encodeURIComponent(priority.value)+
 
+    "&urgency="+encodeURIComponent(urgency.value)+
+
     "&location="+encodeURIComponent(locationBox.value)+
 
     "&description="+encodeURIComponent(description.value);
@@ -120,6 +122,7 @@ submitBtn.onclick=async()=>{
         type.innerHTML="<option>Select Type</option>";
 
         priority.value="";
+        urgency.selectedIndex = 0;
         locationBox.value="";
         description.value="";
 
