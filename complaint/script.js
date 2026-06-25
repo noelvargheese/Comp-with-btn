@@ -1,4 +1,4 @@
-const API = "https://script.google.com/macros/s/AKfycbyRlfGsTJaMP49u5g_pVAZEzSaFHOxdtcfqRfspMihQ_cqW782mmXPerALCDPTwGul3Bw/exec";
+const API = "https://script.google.com/macros/s/AKfycbz8iDYw1bFEplbnmPu1G4TI9tFJTr9NU1C0RYZWEOxkmLQongZroVh7GLDMoAWx6w4L/exec";
 
 const category=document.getElementById("category");
 const system=document.getElementById("system");
