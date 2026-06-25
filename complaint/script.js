@@ -152,11 +152,33 @@ async function loadTasks(){
 
     tasks.forEach(c=>{
 
-        taskContainer.innerHTML+=`
+        taskContainer.innerHTML += `
 
 <div class="task-card">
 
-<h3>${c.id}</h3>
+    ${String(c.urgency).toUpperCase()=="ON"
+    ? `<div class="urgent-box">URGENT</div>`
+    : ""}
+
+    <h3>${c.id}</h3>
+
+    <p><b>Category:</b> ${c.category}</p>
+
+    <p><b>System:</b> ${c.system}</p>
+
+    <p><b>Type:</b> ${c.type}</p>
+
+    <p><b>Priority:</b> ${c.priority}</p>
+
+    <p><b>Location:</b> ${c.location}</p>
+
+    <p>${c.description}</p>
+
+    <span class="status pending">${c.status}</span>
+
+</div>
+
+`;
 
 <p><b>Category:</b> ${c.category}</p>
 
