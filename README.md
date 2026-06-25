@@ -144,7 +144,7 @@ function getTypes(system){
       2,
       1,
       sh.getLastRow()-1,
-      3
+      4
   ).getValues();
 
   return values
@@ -152,7 +152,8 @@ function getTypes(system){
       .map(r=>({
 
           type:r[1],
-          priority:r[2]
+          priority:r[2],
+          urgency:r[3]
 
       }));
 
@@ -178,15 +179,16 @@ function getPriority(type){
       2,
       1,
       sh.getLastRow()-1,
-      3
+      4
   ).getValues();
 
   const row=values.find(r=>r[1]==type);
 
   if(row){
 
-    return{
-      priority:row[2]
+    return {
+    priority: row[2],
+    urgency: row[3]
     };
 
   }
@@ -260,21 +262,22 @@ function addComplaint(e){
 
   const id = generateID();
 
-  sh.appendRow([
+const urgency = p.urgency || "";
 
-      id,
-      p.category,
-      p.system,
-      p.type,
-      p.priority,
-      p.location,
-      p.description,
-      "Pending",
-      "",
-      date,
-      time
-
-  ]);
+sh.appendRow([
+    id,
+    p.category,
+    p.system,
+    p.type,
+    p.priority,
+    p.location,
+    p.description,
+    "Pending",
+    "",
+    date,
+    time,
+    urgency
+]);;
 
   return{
 
@@ -300,9 +303,9 @@ function getComplaints(){
       2,
       1,
       sh.getLastRow()-1,
-      11
+      12
   ).getValues();
-
+  
   return values.map(r=>({
 
       id:r[0],
@@ -315,8 +318,8 @@ function getComplaints(){
       status:r[7],
       assigned:r[8],
       date:r[9],
-      time:r[10]
-
+      time:r[10],
+      urgency:r[11]
   }));
 
 }
