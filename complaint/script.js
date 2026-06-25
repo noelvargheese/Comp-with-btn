@@ -80,9 +80,12 @@ system.onchange = async () => {
     data.forEach(t => {
 
         type.innerHTML +=
-            `<option value="${t.type}" data-priority="${t.priority}">
-                ${t.type}
-            </option>`;
+`<option
+    value="${t.type}"
+    data-priority="${t.priority}"
+    data-urgency="${t.urgency}">
+    ${t.type}
+</option>`;
 
     });
 
@@ -94,8 +97,10 @@ system.onchange = async () => {
 
 type.onchange = () => {
 
-    priority.value =
-        type.options[type.selectedIndex].dataset.priority || "";
+    const option = type.options[type.selectedIndex];
+
+    priority.value = option.dataset.priority || "";
+    urgency.value = option.dataset.urgency || "";
 
 };
 
