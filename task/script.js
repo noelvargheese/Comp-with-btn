@@ -45,7 +45,11 @@ function render(){
 
 <div class="card">
 
-<h2>${c.id}</h2>
+    ${String(c.urgency).toUpperCase()=="ON"
+    ? `<div class="urgent-box">URGENT</div>`
+    : ""}
+
+    <h2>${c.id}</h2>
 
 <p><b>Category:</b> ${c.category}</p>
 
