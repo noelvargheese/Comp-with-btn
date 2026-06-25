@@ -129,9 +129,9 @@ submitBtn.onclick = async () => {
         "&system=" + encodeURIComponent(system.value) +
         "&type=" + encodeURIComponent(type.value) +
         "&priority=" + encodeURIComponent(priority.value) +
-        "&urgency=" + encodeURIComponent(urgency.value) +
         "&location=" + encodeURIComponent(locationBox.value) +
-        "&description=" + encodeURIComponent(description.value);
+        "&description=" + encodeURIComponent(description.value)+
+        "&urgency=" + encodeURIComponent(urgency.value) ;
 
     const res = await fetch(url);
     const result = await res.json();
