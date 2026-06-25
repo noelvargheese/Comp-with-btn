@@ -1,180 +1,205 @@
 const API = "https://script.google.com/macros/s/AKfycbz8iDYw1bFEplbnmPu1G4TI9tFJTr9NU1C0RYZWEOxkmLQongZroVh7GLDMoAWx6w4L/exec";
 
-const category=document.getElementById("category");
-const system=document.getElementById("system");
-const type=document.getElementById("type");
-const priority=document.getElementById("priority");
-const locationBox=document.getElementById("location");
-const description=document.getElementById("description");
+const category = document.getElementById("category");
+const system = document.getElementById("system");
+const type = document.getElementById("type");
+const priority = document.getElementById("priority");
 const urgency = document.getElementById("urgency");
-const submitBtn=document.getElementById("submitComplaint");
-const refreshBtn=document.getElementById("refresh");
-const taskContainer=document.getElementById("taskContainer");
+const locationBox = document.getElementById("location");
+const description = document.getElementById("description");
 
-window.onload=()=>{
+const submitBtn = document.getElementById("submitComplaint");
+const refreshBtn = document.getElementById("refresh");
+const taskContainer = document.getElementById("taskContainer");
 
+window.onload = () => {
     loadCategories();
     loadTasks();
+};
+
+/************************************************
+ * LOAD CATEGORIES
+ ************************************************/
+
+async function loadCategories() {
+
+    const res = await fetch(API + "?action=categories");
+    const data = await res.json();
+
+    category.innerHTML = "<option value=''>Select Category</option>";
+
+    data.forEach(c => {
+        category.innerHTML += `<option value="${c}">${c}</option>`;
+    });
+
+}
+
+/************************************************
+ * CATEGORY CHANGE
+ ************************************************/
+
+category.onchange = async () => {
+
+    system.innerHTML = "<option value=''>Select System</option>";
+    type.innerHTML = "<option value=''>Select Type</option>";
+    priority.value = "";
+
+    if (category.value == "") return;
+
+    const res = await fetch(
+        API + "?action=systems&category=" +
+        encodeURIComponent(category.value)
+    );
+
+    const data = await res.json();
+
+    data.forEach(s => {
+        system.innerHTML += `<option value="${s}">${s}</option>`;
+    });
 
 };
 
-async function loadCategories(){
+/************************************************
+ * SYSTEM CHANGE
+ ************************************************/
 
-    const res=await fetch(API+"?action=categories");
-    const data=await res.json();
+system.onchange = async () => {
 
-    category.innerHTML="<option value=''>Select Category</option>";
+    type.innerHTML = "<option value=''>Select Type</option>";
+    priority.value = "";
 
-    data.forEach(c=>{
+    if (system.value == "") return;
 
-        category.innerHTML+=`<option>${c}</option>`;
+    const res = await fetch(
+        API + "?action=types&system=" +
+        encodeURIComponent(system.value)
+    );
 
-    });
+    const data = await res.json();
 
-}
+    data.forEach(t => {
 
-category.onchange=async()=>{
-
-    system.innerHTML="<option>Select System</option>";
-    type.innerHTML="<option>Select Type</option>";
-    priority.value="";
-
-    if(category.value=="") return;
-
-    const res=await fetch(API+"?action=systems&category="+encodeURIComponent(category.value));
-
-    const data=await res.json();
-
-    data.forEach(s=>{
-
-        system.innerHTML+=`<option>${s}</option>`;
+        type.innerHTML +=
+            `<option value="${t.type}" data-priority="${t.priority}">
+                ${t.type}
+            </option>`;
 
     });
 
-}
+};
 
-system.onchange=async()=>{
+/************************************************
+ * TYPE CHANGE
+ ************************************************/
 
-    type.innerHTML="<option>Select Type</option>";
-    priority.value="";
+type.onchange = () => {
 
-    if(system.value=="") return;
+    priority.value =
+        type.options[type.selectedIndex].dataset.priority || "";
 
-    const res=await fetch(API+"?action=types&system="+encodeURIComponent(system.value));
+};
 
-    const data=await res.json();
+/************************************************
+ * SUBMIT COMPLAINT
+ ************************************************/
 
-    data.forEach(t=>{
+submitBtn.onclick = async () => {
 
-        type.innerHTML+=`<option data-priority="${t.priority}">${t.type}</option>`;
+    if (category.value == "")
+        return alert("Select Category");
 
-    });
+    if (system.value == "")
+        return alert("Select System");
 
-}
+    if (type.value == "")
+        return alert("Select Type");
 
-type.onchange=()=>{
+    if (locationBox.value == "")
+        return alert("Enter Location");
 
-    priority.value=
-    type.options[type.selectedIndex].dataset.priority||"";
+    if (description.value == "")
+        return alert("Enter Description");
 
-}
+    submitBtn.disabled = true;
 
-submitBtn.onclick=async()=>{
+    const url =
+        API +
+        "?action=addComplaint" +
+        "&category=" + encodeURIComponent(category.value) +
+        "&system=" + encodeURIComponent(system.value) +
+        "&type=" + encodeURIComponent(type.value) +
+        "&priority=" + encodeURIComponent(priority.value) +
+        "&urgency=" + encodeURIComponent(urgency.value) +
+        "&location=" + encodeURIComponent(locationBox.value) +
+        "&description=" + encodeURIComponent(description.value);
 
-    if(category.value=="") return alert("Select Category");
-    if(system.value=="") return alert("Select System");
-    if(type.value=="") return alert("Select Type");
-    if(locationBox.value=="") return alert("Enter Location");
-    if(description.value=="") return alert("Enter Description");
+    const res = await fetch(url);
+    const result = await res.json();
 
-    submitBtn.disabled=true;
+    submitBtn.disabled = false;
 
-    const url=API+
+    if (result.success) {
 
-    "?action=addComplaint"+
+        alert("Complaint Registered : " + result.id);
 
-    "&category="+encodeURIComponent(category.value)+
+        category.selectedIndex = 0;
+        system.innerHTML = "<option value=''>Select System</option>";
+        type.innerHTML = "<option value=''>Select Type</option>";
 
-    "&system="+encodeURIComponent(system.value)+
-
-    "&type="+encodeURIComponent(type.value)+
-
-    "&priority="+encodeURIComponent(priority.value)+
-
-    "&urgency="+encodeURIComponent(urgency.value)+
-
-    "&location="+encodeURIComponent(locationBox.value)+
-
-    "&description="+encodeURIComponent(description.value);
-
-    const res=await fetch(url);
-
-    const result=await res.json();
-
-    submitBtn.disabled=false;
-
-    if(result.success){
-
-        alert("Complaint Registered : "+result.id);
-
-        category.selectedIndex=0;
-        system.innerHTML="<option>Select System</option>";
-        type.innerHTML="<option>Select Type</option>";
-
-        priority.value="";
+        priority.value = "";
         urgency.selectedIndex = 0;
-        locationBox.value="";
-        description.value="";
+        locationBox.value = "";
+        description.value = "";
 
         loadTasks();
 
-    }else{
+    } else {
 
-        alert(result.error||"Unable to submit.");
+        alert(result.error || "Unable to submit.");
 
     }
 
-}
+};
 
-async function loadTasks(){
+/************************************************
+ * LOAD TASKS
+ ************************************************/
 
-    const res=await fetch(API+"?action=tasks");
+async function loadTasks() {
 
-    const tasks=await res.json();
+    const res = await fetch(API + "?action=tasks");
+    const tasks = await res.json();
 
-    taskContainer.innerHTML="";
+    taskContainer.innerHTML = "";
 
-    if(tasks.length==0){
+    if (tasks.length == 0) {
 
-        taskContainer.innerHTML="<h3>No Pending Tasks</h3>";
+        taskContainer.innerHTML =
+            "<h3>No Pending Tasks</h3>";
+
         return;
 
     }
 
     tasks.reverse();
 
-    tasks.forEach(c=>{
+    tasks.forEach(c => {
 
         taskContainer.innerHTML += `
 
 <div class="task-card">
 
-    ${String(c.urgency).toUpperCase()=="ON"
-    ? `<div class="urgent-box">URGENT</div>`
-    : ""}
+    ${String(c.urgency).toUpperCase() === "ON"
+        ? `<div class="urgent-box">URGENT</div>`
+        : ""}
 
     <h3>${c.id}</h3>
 
     <p><b>Category:</b> ${c.category}</p>
-
     <p><b>System:</b> ${c.system}</p>
-
     <p><b>Type:</b> ${c.type}</p>
-
     <p><b>Priority:</b> ${c.priority}</p>
-
     <p><b>Location:</b> ${c.location}</p>
-
     <p>${c.description}</p>
 
     <span class="status pending">${c.status}</span>
@@ -183,26 +208,14 @@ async function loadTasks(){
 
 `;
 
-<p><b>Category:</b> ${c.category}</p>
-
-<p><b>System:</b> ${c.system}</p>
-
-<p><b>Type:</b> ${c.type}</p>
-
-<p><b>Priority:</b> ${c.priority}</p>
-
-<p><b>Location:</b> ${c.location}</p>
-
-<p>${c.description}</p>
-
-<span class="status pending">${c.status}</span>
-
-</div>
-
-`;
-
     });
 
 }
 
-refreshBtn.onclick=loadTasks;
+/************************************************
+ * REFRESH
+ ************************************************/
+
+refreshBtn.onclick = () => {
+    loadTasks();
+};
