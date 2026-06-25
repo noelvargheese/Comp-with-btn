@@ -85,7 +85,43 @@ FORM
     color:var(--primary);
 
 }
+.urgent-box{
 
+    display:inline-block;
+
+    background:#d60000;
+
+    color:#fff;
+
+    font-weight:bold;
+
+    padding:6px 12px;
+
+    border-radius:6px;
+
+    margin-bottom:12px;
+
+    letter-spacing:1px;
+
+    animation:pulse 1s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{
+transform:scale(1);
+}
+
+50%{
+transform:scale(1.08);
+}
+
+100%{
+transform:scale(1);
+}
+
+}
 .horizontal-form{
 
     display:grid;
